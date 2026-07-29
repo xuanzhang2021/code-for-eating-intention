@@ -1,0 +1,175 @@
+#work_dir: ./work_dir_19_points_FAN_6_layers_train_on_300W_LP_test_on_BIWI/GCN_head_pose
+work_dir: work_dir_19_points_FAN_6_layers_train_on_300W_LP_test_on_BIWI/GCN_head_pose/20260116
+
+# 验证dataset 按照 sample划分
+# feeder
+feeder: feeder.feeder.Feeder
+train_feeder_args:
+  random_choose: False
+  random_move: False
+  window_size: -1 # 完全不做长度处理
+  normalization: True          # 启用归一化
+  landmark_indices: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27]  # 前面landmarks的点
+  # landmark_indices: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67]  # 前面landmarks的点
+  pose_index: 28 # 最后一个点是pose
+  
+# 改变采样长度和滑动步
+  # data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T5_journal_with_videoid_stride3/fusion_kp_pose_29.npy
+  # label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T5_journal_with_videoid_stride3/intention.npy
+
+
+# journal 用的数据 sample 采样
+  # data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_journal_with_videoid_stride10_3/ddfa_pose_29.npy
+  # data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_journal_with_videoid_stride10_3/fusion_kp_28.npy 
+  data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_journal_with_videoid_stride10_3/fusion_kp_pose_29.npy
+  label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_journal_with_videoid_stride10_3/intention.npy
+
+# our models
+model: net.st_gcn_7.Model
+model_args:
+ in_channels: 3 # 源代码中in_channels: 2  与 model中的
+ num_class: 5   # 如果是预测intention，num_class:5, 
+ edge_importance_weighting: True
+ graph_args:
+    # layout: 'openpose_face_20_points_with_pose' # 'openpose_face_20_points_with_pose'  # 'openpose_face_19_points'
+    layout: 'openpose_face_29_points_with_pose_k4_improve'
+    strategy: 'uniform' # 'spatial' #  #
+
+# training
+device: [0,1]           # [0, 1, 2, 3]
+batch_size: 256     # 我自己的model是256，ctrgcn是8
+valid_batch_size: 256   # 我自己的model是256，ctrgcn是8
+test_batch_size: 256   # 我自己的model是256，ctrgcn是8
+
+# optim  调整学习率策略
+base_lr: 0.1
+step: [50, 120, 180, 250] # step: [50, 150, 170]
+num_epoch: 280
+########################################
+
+# only for ctrgcn
+# model: net.ctrgcn.Model # net.ctrgcn.Model
+# model_args:
+#  num_class: 5
+#  num_point: 29
+#  num_person: 1
+#  graph: graph_baseline.ntu_rgb_d.Graph
+#  graph_args:
+#    labeling_mode: 'spatial'
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 8     # 我自己的model是256，ctrgcn是8
+# valid_batch_size: 8   # 我自己的model是256，ctrgcn是8
+# test_batch_size: 8   # 我自己的model是256，ctrgcn是8
+
+# # optim  调整学习率策略
+# base_lr: 0.1
+# step: [35, 55]
+# num_epoch: 65 
+########################################
+    
+# only for 2s-gcn
+# model: net.agcn.Model # net.ctrgcn.Model
+# model_args:
+#   num_class: 5
+#   num_point: 29
+#   num_person: 1
+#   graph: graph_baseline.ntu_rgb_d.Graph
+#   graph_args:
+#     labeling_mode: 'spatial'
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 64     # 我自己的model是256，ctrgcn是8
+# valid_batch_size: 64   # 我自己的model是256，ctrgcn是8
+# test_batch_size: 64   # 我自己的model是256，ctrgcn是8
+
+# # optim  调整学习率策略
+# base_lr: 0.1
+# step: [30, 40]
+# num_epoch: 50
+########################################
+
+# only for msg3d
+# model: net.msg3d.Model
+# model_args:
+#  num_class: 5
+#  num_point: 29
+#  num_person: 1
+#  num_gcn_scales: 13    # `num_scales` == `K + 1` in the paper
+#  num_g3d_scales: 6
+#  graph: graph_baseline.ntu_rgb_d.AdjMatrixGraph
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 32     
+# valid_batch_size: 16   
+# test_batch_size: 32   
+
+# # optim  调整学习率策略
+# base_lr: 0.05
+# step: [30, 40]
+# num_epoch: 50
+########################################
+
+# only for STTFormer
+# model: net.sttformer.Model # net.ctrgcn.Model
+# model_args:
+#  len_parts: 6
+#  num_frames: 30
+#  num_class: 5
+#  num_joints: 29
+#  num_persons: 1
+#  num_channels: 3
+#  num_heads: 3
+#  kernel_size: [3, 5]
+#  use_pes: True
+#  config: [[64,  64,  16], [64,  64,  16], [64,  128, 32], [128, 128, 32],[128, 256, 64], [256, 256, 64], [256, 256, 64], [256, 256, 64]]
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 64    # 我自己的model是256，ctrgcn是8
+# valid_batch_size: 64   # 我自己的model是256，ctrgcn是8
+# test_batch_size: 64   # 我自己的model是256，ctrgcn是8
+
+# # optim  调整学习率策略
+# base_lr: 0.1
+# step: [60, 80]
+# num_epoch: 90
+########################################
+
+
+# only for Skateformer
+#model: net.SkateFormer.SkateFormer_
+#model_args:
+#  num_class: 5
+#  num_people: 1
+#  num_points: 29
+#  kernel_size: 7
+#  num_heads: 32
+#  attn_drop: 0.5
+  # head_drop: 0.0
+  # rel: True
+  # drop_path: 0.2
+  # num_frames: 30
+  # type_1_size: [1, 1]
+  # type_2_size: [1, 29]
+  # type_3_size: [1, 1]
+  # type_4_size: [1, 29]
+  # mlp_ratio: 4.0
+  # index_t: True
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 128
+# test_batch_size: 128
+# nesterov: True
+
+# # optim  调整学习率策略
+# optimizer: AdamW
+# weight_decay: 0.1
+# base_lr: 1e-3
+# step: [50, 90, 130, 160]
+# num_epoch: 220
+########################################

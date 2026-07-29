@@ -1,0 +1,4 @@
+/home/zhangxuan/sourcecode/video_to_images/pngs/3-failed/930.png,4
+/home/zhangxuan/sourcecode/video_to_images/pngs/3-failed/3-FAN-fialed.png,4
+/home/zhangxuan/sourcecode/video_to_images/pngs/3-failed/8125.756_244.png,4
+/home/zhangxuan/sourcecode/video_to_images/pngs/3-failed/8159.056_245.png,4

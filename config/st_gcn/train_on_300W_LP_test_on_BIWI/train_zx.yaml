@@ -1,0 +1,55 @@
+work_dir: work_dir_19_points_FAN_6_layers_train_on_300W_LP_test_on_BIWI/GCN_head_pose/20260116
+
+# ========== feeder ==========
+feeder: feeder.feeder.Feeder
+
+train_feeder_args:
+  random_choose: False
+  random_move: False
+  window_size: 1
+  normalization: True
+  landmark_indices: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+  pose_index: 19
+  data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_with_videoid_stride5/train_ddfa_pose_20.npy
+  label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_with_videoid_stride5/train_intention.npy
+
+valid_feeder_args:
+  random_choose: False
+  random_move: False
+  window_size: 1
+  normalization: True
+  landmark_indices: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+  pose_index: 19
+  data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_with_videoid_stride5/valid_ddfa_pose_20.npy
+  label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_with_videoid_stride5/valid_intention.npy
+
+test_feeder_args:
+  random_choose: False
+  random_move: False
+  window_size: 1
+  normalization: True
+  landmark_indices: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+  pose_index: 19
+  data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_with_videoid_stride5/test_ddfa_pose_20.npy
+  label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/merged_T30_with_videoid_stride5/test_intention.npy
+
+# ========== model ==========
+model: net.st_gcn.Model
+model_args:
+  in_channels: 3
+  num_class: 5
+  edge_importance_weighting: False
+  graph_args:
+    layout: 'openpose_face_20_points'
+    strategy: 'spatial'
+
+# ========== training ==========
+device: [0,1]
+batch_size: 256
+valid_batch_size: 256
+test_batch_size: 256
+
+# ========== optim ==========
+base_lr: 0.01
+step: [50, 100, 150]
+num_epoch: 200

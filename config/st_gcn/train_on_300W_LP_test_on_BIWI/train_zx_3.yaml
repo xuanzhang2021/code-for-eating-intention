@@ -1,0 +1,220 @@
+work_dir: work_dir_19_points_FAN_6_layers_train_on_300W_LP_test_on_BIWI/GCN_head_pose/20260116
+
+feeder: feeder.feeder.Feeder
+
+# journal subject-cross -- train valid and test
+train_feeder_args:
+  data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/train/ddfa_pose_29.npy
+  #data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/train/fusion_kp_pose_29.npy
+  label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/train/intention.npy
+  random_choose: False
+  random_move: False
+  window_size: -1
+  normalization: True
+  landmark_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+  pose_index: 28
+  transform_pose: False
+  center_mode: mean
+  scale_mode: rms
+  eps: 1.0e-6
+
+valid_feeder_args:
+  data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/valid/ddfa_pose_29.npy
+  #data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/valid/fusion_kp_pose_29.npy
+  label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/valid/intention.npy
+  random_choose: False
+  random_move: False
+  window_size: -1
+  normalization: True
+  landmark_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+  pose_index: 28
+  transform_pose: False
+  center_mode: mean
+  scale_mode: rms
+  eps: 1.0e-6
+
+test_feeder_args:
+  data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/test/ddfa_pose_29.npy
+  #data_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/test/fusion_kp_pose_29.npy
+  label_path: /home/zhangxuan/sourcecode/3DDFA_V2/dataset/video/dataset_groups/group_stratified_video_split/test/intention.npy
+  random_choose: False
+  random_move: False
+  window_size: -1
+  normalization: True
+  landmark_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+  pose_index: 28
+  transform_pose: False
+  center_mode: mean
+  scale_mode: rms
+  eps: 1.0e-6
+
+# our models
+model: net.st_gcn_0.Model
+model_args:
+  in_channels: 3
+  num_class: 5
+  edge_importance_weighting: True
+  graph_args:
+    layout: 'openpose_face_29_points_with_pose_k4_improve'
+    strategy: 'uniform'
+
+# training
+device: [0, 1]
+batch_size: 32
+valid_batch_size: 32
+
+# optim
+base_lr: 0.05
+step: [30, 50, 80, 100]
+num_epoch: 2
+weight_decay: 5e-4
+########################################
+
+# only for stgcn
+# model: net.st_gcn_0.Model
+# model_args:
+#   in_channels: 3
+#   num_class: 5
+#   edge_importance_weighting: True
+#   graph_args:
+#     layout: 'openpose_face_29_points_with_pose_k4_improve'
+#     strategy: 'uniform'
+
+# # training
+# device: [0, 1]
+# batch_size: 64
+# valid_batch_size: 64
+
+# # optim
+# base_lr: 0.1
+# step: [10, 50]
+# num_epoch: 80
+# weight_decay: 0.0001
+########################################
+
+# only for ctrgcn
+# model: net.ctrgcn.Model # net.ctrgcn.Model
+# model_args:
+#  num_class: 5
+#  num_point: 29
+#  num_person: 1
+#  graph: graph_baseline.ntu_rgb_d.Graph
+#  graph_args:
+#    labeling_mode: 'spatial'
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 8     # 我自己的model是256，ctrgcn是8
+# valid_batch_size: 8   # 我自己的model是256，ctrgcn是8
+# test_batch_size: 8   # 我自己的model是256，ctrgcn是8
+
+# # optim  调整学习率策略
+# base_lr: 0.1
+# step: [35, 55]
+# num_epoch: 65
+########################################
+
+# only for 2s-gcn
+# model: net.agcn.Model # net.ctrgcn.Model
+# model_args:
+#   num_class: 5
+#   num_point: 29
+#   num_person: 1
+#   graph: graph_baseline.ntu_rgb_d.Graph
+#   graph_args:
+#     labeling_mode: 'spatial'
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 64     # 我自己的model是256，ctrgcn是8
+# valid_batch_size: 64   # 我自己的model是256，ctrgcn是8
+# test_batch_size: 64   # 我自己的model是256，ctrgcn是8
+
+# # optim  调整学习率策略
+# base_lr: 0.1
+# step: [30, 40]
+# num_epoch: 50
+########################################
+
+# only for msg3d
+# model: net.msg3d.Model
+# model_args:
+#  num_class: 5
+#  num_point: 29
+#  num_person: 1
+#  num_gcn_scales: 13    # `num_scales` == `K + 1` in the paper
+#  num_g3d_scales: 6
+#  graph: graph_baseline.ntu_rgb_d.AdjMatrixGraph
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 32     
+# valid_batch_size: 16   
+# test_batch_size: 32   
+
+# # optim  调整学习率策略
+# base_lr: 0.05
+# step: [30, 40]
+# num_epoch: 50
+########################################
+
+# only for STTFormer
+# model: net.sttformer.Model 
+# model_args:
+#  len_parts: 6
+#  num_frames: 30
+#  num_class: 5
+#  num_joints: 29
+#  num_persons: 1
+#  num_channels: 3
+#  num_heads: 3
+#  kernel_size: [3, 5]
+#  use_pes: True
+#  config: [[64,  64,  16], [64,  64,  16], [64,  128, 32], [128, 128, 32],[128, 256, 64], [256, 256, 64], [256, 256, 64], [256, 256, 64]]
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 64    # 我自己的model是256，ctrgcn是8
+# valid_batch_size: 64   # 我自己的model是256，ctrgcn是8
+# test_batch_size: 64   # 我自己的model是256，ctrgcn是8
+
+# # optim  调整学习率策略
+# base_lr: 0.1
+# step: [60, 80]
+# num_epoch: 90
+########################################
+
+# only for Skateformer
+# model: net.SkateFormer.SkateFormer_
+# model_args:
+#  num_class: 5
+#  num_people: 1
+#  num_points: 29
+#  kernel_size: 7
+#  num_heads: 32
+#  attn_drop: 0.5
+#  head_drop: 0.0
+#  rel: True
+#  drop_path: 0.2
+#  num_frames: 30
+#  type_1_size: [1, 1]
+#  type_2_size: [1, 29]
+#  type_3_size: [1, 1]
+#  type_4_size: [1, 29]
+#  mlp_ratio: 4.0
+#  index_t: True
+
+# # training
+# device: [0,1]           # [0, 1, 2, 3]
+# batch_size: 128
+# test_batch_size: 128
+# nesterov: True
+
+# # optim  调整学习率策略
+# optimizer: AdamW
+# weight_decay: 0.1
+# base_lr: 1e-3
+# step: [50, 90, 130, 160]
+# num_epoch: 220
+########################################
+
